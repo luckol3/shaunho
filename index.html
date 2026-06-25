@@ -2,5 +2,29 @@
 <html>
 <link rel="icon" type="image/x-icon" href="/tungtungtung.webp">
 <title>shaun ho</Title>
+  
+<iframe 
+  id="rickroll" 
+  style="display: none; margin-top: 15px;" 
+  width="560" 
+  height="315" 
+  src="https://youtube.com" 
+  frameborder="0" 
+  allow="autoplay; encrypted-media" 
+  allowfullscreen>
+</iframe>
+
+<!-- The clickable image trigger -->
+<img 
+  src="3tung.png" 
+  alt="Click Me" 
+  style="cursor: pointer; max-width: 100%; height: auto;" 
+  onclick="
+    var video = document.getElementById('rickroll');
+    video.src += '?autoplay=1';
+    video.style.display = 'block';
+  "
+/>
+
 <img src="/tungtungtung.webp" style="width:1500px;height:600px;"></img>
 </html>
