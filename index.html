@@ -24,6 +24,27 @@ body.storm-active {
   background-color: #2F3538; /* Deep storm gray hex value */
 }
 
+/* --- Top Static Warning Banner Styling --- */
+#topWarningBanner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #b30000; /* Deep warning red */
+  color: #ffffff;
+  text-align: center;
+  padding: 14px 0;
+  font-size: 20px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  /* Absolute highest priority layer so it stays strictly on top of everything */
+  z-index: 4000; 
+  pointer-events: none; /* Allows clicks to pass through if something sits behind its edges */
+  user-select: none;
+  display: none; /* Hidden until button hover active */
+}
+
 /* --- Toned Down Soft Vibration Keyframes for Popups --- */
 @keyframes subtleVibration {
   0% { transform: translate(0.5px, 0.5px) rotate(0deg); }
@@ -155,6 +176,10 @@ div.modal:target {
 </style> 
 </head> 
 <body> 
+
+<!-- Top Static Warning Banner -->
+<div id="topWarningBanner">DO NOT CLICK ME</div>
+
 <!-- Main Page Trigger Button (Positioned via CSS coordinates into the circle) --> 
 <a href="#imagePopup" style="margin: 0; display: inline;"> 
   <button type="button" class="open-btn" id="triggerBtn">feet pics</button> 
@@ -195,6 +220,7 @@ document.addEventListener('keydown', function(event) {
 const button = document.getElementById('triggerBtn');
 const container = document.getElementById('popupContainer');
 const overlay = document.getElementById('dangerOverlay');
+const topBanner = document.getElementById('topWarningBanner');
 
 let globalShakeInterval = null;
 let buttonFlashInterval = null;
@@ -202,6 +228,17 @@ let buttonFlashInterval = null;
 // --- Load Your Local MP3 Track ---
 const tornadoAudio = new Audio('tornado.mp3');
 tornadoAudio.loop = true; 
+
+// UNLOCK BROWSER AUTOPLAY: Pre-load the track silently upon the user's very first click gesture anywhere on the screen
+document.addEventListener('click', function unlockMedia() {
+  tornadoAudio.play().then(() => {
+    tornadoAudio.pause(); // Instantly pause it so it doesn't play until hovered
+    tornadoAudio.currentTime = 0;
+  }).catch((e) => console.log("Audio unlock failed: ", e));
+  
+  // Wipe out this listener once it successfully satisfies the browser interaction requirement
+  document.removeEventListener('click', unlockMedia);
+}, { once: true });
 
 // Fullscreen Screen Shake Module
 function startScreenShake() {
@@ -231,14 +268,17 @@ function stopButtonFlash() {
 
 button.addEventListener('mouseenter', () => {
   overlay.style.display = 'block';
+  topBanner.style.display = 'block'; 
   
   // Apply transition styles and start fading background color to dark storm gray
   document.body.style.transition = 'background-color 1.5s ease-in-out, transform 0.05s ease';
   document.body.classList.add('storm-active');
   
-  // Reset track to beginning and play the MP3 audio
+  // Play the MP3 audio safely
   tornadoAudio.currentTime = 0;
-  tornadoAudio.play().catch(() => {});
+  tornadoAudio.play().catch((e) => {
+    console.error("Audio playback blocked. Click the page surface first to authorize media engines.", e);
+  });
   
   // Ignite visual emergency effect loops
   startScreenShake();
@@ -269,6 +309,7 @@ button.addEventListener('mouseenter', () => {
 button.addEventListener('mouseleave', () => {
   container.innerHTML = '';
   overlay.style.display = 'none';
+  topBanner.style.display = 'none'; 
   
   // Temporarily strip transition times so the background snappily snaps straight back to clean white
   document.body.style.transition = 'none';
