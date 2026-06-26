@@ -13,18 +13,17 @@ body {
     margin: 0; 
     padding: 20px 0;
     background-color: #f4f4f9; 
+    position: relative; /* Essential to anchor the absolute button contextually */
+    min-height: 100vh;
 } 
-
-/* Header container specifically for the top button */
-.button-header {
-    display: flex;
-    justify-content: center; /* Centers the button horizontally */
-    width: 100%;
-    margin-bottom: 20px;
-}
 
 /* Style for the main trigger button */ 
 .open-btn { 
+    /* Position exactly into the right-hand blank zone */
+    position: absolute;
+    top: 360px;          /* Vertical alignment matching your green circle zone */
+    right: 25%;          /* Horizontally locks it deep in the right half */
+    
     padding: 12px 24px; 
     font-size: 16px; 
     font-weight: bold; 
@@ -34,21 +33,21 @@ body {
     border-radius: 6px; 
     cursor: pointer; 
     transition: all 0.2s ease; 
+    z-index: 10;
 } 
 .open-btn:hover { 
     background-color: #e2e2e2; 
     border-color: #999; 
 } 
 
-/* Default behavior for your normal images and paragraph links */
+/* Default layout behavior for your content elements */
 a, p, img {
-    display: block;         /* Stack normally below each other */
-    width: max-content;     /* Keeps width confined to the content size */
+    display: block;         
+    width: max-content;     
     max-width: 100%;
-    margin: 20px 0 20px 40px; /* Aligns them toward the left side with a 40px margin offset */
+    margin: 20px 0 20px 40px; 
 }
 
-/* Paragraph specific text alignment override */
 p {
     text-align: left;
 }
@@ -84,7 +83,7 @@ p {
     display: block; 
     border: 4px solid white; 
     border-radius: 4px; 
-    margin: 0;             /* Prevents modal images from getting the body image margins */
+    margin: 0;             
 } 
 /* Visual styling for the 'X' close button */ 
 .close-btn { 
@@ -109,14 +108,12 @@ p {
 </head> 
 <body> 
 
-<!-- Main Page Trigger Button (Stays perfectly top-centered) --> 
-<div class="button-header">
-    <a href="#imagePopup" style="margin: 0; display: inline;"> 
-        <button type="button" class="open-btn">feet pics</button> 
-    </a> 
-</div>
+<!-- Main Page Trigger Button (Positioned via CSS coordinates into the circle) --> 
+<a href="#imagePopup" style="margin: 0; display: inline;"> 
+    <button type="button" class="open-btn">feet pics</button> 
+</a> 
 
-<!-- All remaining elements now cascade naturally along the left side -->
+<!-- Left content block remains entirely intact -->
 <a href="https://youtube.com" target="_blank"> 
     <img src="3tung.png" alt="dont touch me" title="dont touch me" style="cursor: pointer; width: auto; height: auto; margin: 0;" /> 
 </a> 
