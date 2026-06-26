@@ -45,6 +45,19 @@ body {
   animation: subtleVibration 0.15s infinite linear;
 }
 
+/* --- Semi-Transparent Danger Tint Overlay --- */
+#dangerOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 0, 0, 0.15); /* Light red danger filter tint */
+  z-index: 1500; /* Sits cleanly behind popups and button, but over baseline content */
+  pointer-events: none; /* Ghost overlay allows clicks straight through */
+  display: none; /* Hidden until button hover active */
+}
+
 /* Style for the main trigger button */ 
 .open-btn { 
  /* Position exactly into the right-hand blank zone */ 
@@ -59,13 +72,21 @@ body {
  border: 2px solid #ccc; 
  border-radius: 6px; 
  cursor: pointer; 
- transition: all 0.2s ease; 
- z-index: 2010; /* Placed higher than popups to ensure total top visibility and clickability */
+ transition: color 0.1s ease, background-color 0.1s ease, border-color 0.1s ease; 
+ z-index: 2010; /* Placed higher than popups and overlay to ensure top visibility and clickability */
 } 
 .open-btn:hover { 
  background-color: #e2e2e2; 
  border-color: #999; 
 } 
+
+/* Dynamic flash style triggered via Javascript chime sync */
+.open-btn.flash-active {
+  background-color: #ff4d4d !important;
+  color: #fff !important;
+  border-color: #cc0000 !important;
+}
+
 /* Default layout behavior for your content elements */ 
 a, p, img { 
  display: block; 
@@ -77,7 +98,7 @@ p {
  text-align: left; 
 } 
 /* The hidden popup background overlay */ 
-.modal { 
+div.modal { 
  display: none; 
  position: fixed; 
  z-index: 3000; /* Pushed high above everything else */
@@ -90,7 +111,7 @@ p {
  align-items: center; 
 } 
 /* Displays the modal when its ID is in the URL hash */ 
-.modal:target { 
+div.modal:target { 
  display: flex; 
 } 
 /* Wrapper box for the popup image content */ 
@@ -133,11 +154,14 @@ p {
 <body> 
 <!-- Main Page Trigger Button (Positioned via CSS coordinates into the circle) --> 
 <a href="#imagePopup" style="margin: 0; display: inline;"> 
- <button type="button" class="open-btn" id="triggerBtn">feet pics</button> 
+  <button type="button" class="open-btn" id="triggerBtn">feet pics</button> 
 </a> 
 
 <!-- Container where random vibrating popups will be injected -->
 <div id="popupContainer"></div>
+
+<!-- Background danger filter container layer -->
+<div id="dangerOverlay"></div>
 
 <!-- Left content block remains entirely intact --> 
 <a href="https://youtube.com" target="_blank"> 
@@ -167,20 +191,51 @@ document.addEventListener('keydown', function(event) {
 
 const button = document.getElementById('triggerBtn');
 const container = document.getElementById('popupContainer');
+const overlay = document.getElementById('dangerOverlay');
 let dingInterval = null;
+let audioCtx = null;
 
-// High-frequency synthetic metallic 'ding' bell sound (Base64 WAV format)
-const dingAudioURI = "data:audio/wav;base64,UklGRmYAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YVIAAACAgICAgoKCgoKCfn5+fHp6enp5eXl4d3d3d3Z2dnZ1dXV0dHRycXFxcG9vb29ubm5tbW1samppaGhoaGdmZmZlZWVrAAAAAA==";
+// Function to synthesize a high-pitched metallic bell / chime noise and execute synchronized visual flash
+function playBellSound() {
+  try {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime); // High pitch bell chime frequency (A5 node)
+    
+    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.25);
+
+    // Trigger visual button flashing sequence exactly synced with the chime wave envelope
+    button.classList.add('flash-active');
+    setTimeout(() => {
+      button.classList.remove('flash-active');
+    }, 120);
+
+  } catch (e) {
+    // Fallback block
+  }
+}
 
 button.addEventListener('mouseenter', () => {
-  // Fire an immediate initial ding sound
-  const initialDing = new Audio(dingAudioURI);
-  initialDing.play().catch(() => {});
+  // Fire the initial bell chime right away and toggle overlay visibility
+  overlay.style.display = 'block';
+  playBellSound();
 
-  // Set up a loop interval to constantly hit "ding... ding... ding..." every 250 milliseconds
+  // Trigger subsequent bell chimes precisely every 250 milliseconds
   dingInterval = setInterval(() => {
-    const freshDing = new Audio(dingAudioURI);
-    freshDing.play().catch(() => {});
+    playBellSound();
   }, 250);
 
   // Spawn 25 subtly shaking elements across the viewport bounds
@@ -199,9 +254,11 @@ button.addEventListener('mouseenter', () => {
   }
 });
 
-// Clear popups and dismantle the audio interval when cursor exits the button frame
+// Clear popups, hide overlay filter, and dismantle interval once mouse exits button frame bounds
 button.addEventListener('mouseleave', () => {
   container.innerHTML = '';
+  overlay.style.display = 'none';
+  button.classList.remove('flash-active');
   if (dingInterval) {
     clearInterval(dingInterval);
     dingInterval = null;
