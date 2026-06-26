@@ -15,8 +15,14 @@ body {
  background-color: #ffffff; 
  position: relative; /* Essential to anchor the absolute button contextually */ 
  min-height: 100vh; 
- transition: transform 0.05s ease; /* Enables snappy fullscreen screen shake */
+ /* Enables smooth layout shifting into dark storm gray and snappy structural resets */
+ transition: background-color 1.5s ease-in-out, transform 0.05s ease; 
 } 
+
+/* Class applied by JavaScript during hover to trigger the slow fade to dark storm gray */
+body.storm-active {
+  background-color: #2F3538; /* Deep storm gray hex value */
+}
 
 /* --- Toned Down Soft Vibration Keyframes for Popups --- */
 @keyframes subtleVibration {
@@ -195,7 +201,7 @@ let buttonFlashInterval = null;
 
 // --- Load Your Local MP3 Track ---
 const tornadoAudio = new Audio('tornado.mp3');
-tornadoAudio.loop = true; // Loops the siren seamlessly if the user keeps hovering
+tornadoAudio.loop = true; 
 
 // Fullscreen Screen Shake Module
 function startScreenShake() {
@@ -215,7 +221,7 @@ function stopScreenShake() {
 function startButtonFlash() {
   buttonFlashInterval = setInterval(() => {
     button.classList.toggle('flash-active');
-  }, 200); // Toggles color every 200ms for an emergency light effect
+  }, 200); 
 }
 
 function stopButtonFlash() {
@@ -226,9 +232,13 @@ function stopButtonFlash() {
 button.addEventListener('mouseenter', () => {
   overlay.style.display = 'block';
   
+  // Apply transition styles and start fading background color to dark storm gray
+  document.body.style.transition = 'background-color 1.5s ease-in-out, transform 0.05s ease';
+  document.body.classList.add('storm-active');
+  
   // Reset track to beginning and play the MP3 audio
   tornadoAudio.currentTime = 0;
-  tornadoAudio.play().catch(() => { /* Stops browser autoplay blocks */ });
+  tornadoAudio.play().catch(() => {});
   
   // Ignite visual emergency effect loops
   startScreenShake();
@@ -245,8 +255,8 @@ button.addEventListener('mouseenter', () => {
     popup.style.top = randomTop + 'vh';
     popup.style.left = randomLeft + 'vw';
     
-    const randomScale = (Math.random() * 0.7 + 0.6).toFixed(2); // Scale between 0.6x and 1.3x
-    const randomOpacity = (Math.random() * 0.4 + 0.6).toFixed(2); // Opacity between 0.6 and 1.0
+    const randomScale = (Math.random() * 0.7 + 0.6).toFixed(2); 
+    const randomOpacity = (Math.random() * 0.4 + 0.6).toFixed(2); 
     
     popup.style.transform = `scale(${randomScale})`;
     popup.style.opacity = randomOpacity;
@@ -259,6 +269,10 @@ button.addEventListener('mouseenter', () => {
 button.addEventListener('mouseleave', () => {
   container.innerHTML = '';
   overlay.style.display = 'none';
+  
+  // Temporarily strip transition times so the background snappily snaps straight back to clean white
+  document.body.style.transition = 'none';
+  document.body.classList.remove('storm-active');
   
   // Kill MP3 audio and visual effect engines instantly
   tornadoAudio.pause();
