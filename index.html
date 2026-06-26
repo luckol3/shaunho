@@ -17,6 +17,24 @@ body {
   min-height: 100vh;
 }
 
+/* --- Top Left Hover Popup Styling --- */
+.hover-alert {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 2000;
+  /* Crucial: Allows click events to pass straight through this element */
+  pointer-events: none; 
+}
+
 /* Style for the main trigger button */
 .open-btn {
   /* Position exactly into the right-hand blank zone */
@@ -38,6 +56,11 @@ body {
 .open-btn:hover {
   background-color: #e2e2e2;
   border-color: #999;
+}
+
+/* --- Show the top-left alert box when hovering over the anchor/button link --- */
+.btn-wrapper:hover ~ .hover-alert {
+  display: block;
 }
 
 /* Default layout behavior for your content elements */
@@ -111,10 +134,13 @@ p {
 </head>
 <body>
 
-<!-- Main Page Trigger Button (Equipped with title tag to act like an image alt text tooltip) -->
-<a href="#imagePopup" style="margin: 0; display: inline;">
-  <button type="button" class="open-btn" title="why are you freaky">feet pics</button>
+<!-- Main Page Trigger Button (Wrapped in a class to easily track the hover state) -->
+<a href="#imagePopup" class="btn-wrapper" style="margin: 0; display: inline;">
+  <button type="button" class="open-btn">feet pics</button>
 </a>
+
+<!-- The Top Left Popup Box -->
+<div class="hover-alert">why are you freaky</div>
 
 <!-- Left content block remains entirely intact -->
 <a href="https://youtube.com" target="_blank">
