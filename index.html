@@ -176,11 +176,10 @@ div.modal:target {
 
 .sigh-border{
 position:fixed;
-width:120px;
-height:120px;
 object-fit:contain;
-z-index:3200;
 pointer-events:none;
+z-index:3200;
+animation:subtleVibration .15s linear infinite;
 }
 
 </style> 
@@ -236,22 +235,37 @@ const topBanner = document.getElementById('topWarningBanner');
 let globalShakeInterval = null;
 let buttonFlashInterval = null;
 const sighContainer=document.getElementById('sighBorderContainer');
-function addSigh(l,t){
- const i=document.createElement('img');
- i.src='sigh.webp';
- i.className='sigh-border';
- i.style.left=l+'px';
- i.style.top=t+'px';
- sighContainer.appendChild(i);
-}
+let hovering=false;
+let popupOpen=false;
+
 function showSighBorder(){
  sighContainer.innerHTML='';
- const s=120,sp=100;
- for(let x=0;x<window.innerWidth;x+=sp){addSigh(x,0);addSigh(x,window.innerHeight-s);}
- for(let y=sp;y<window.innerHeight-sp;y+=sp){addSigh(0,y);addSigh(window.innerWidth-s,y);}
+ const count=100;
+ for(let i=0;i<count;i++){
+   const img=document.createElement('img');
+   img.src='sigh.webp';
+   img.className='sigh-border';
+   const size=70+Math.random()*120;
+   img.style.width=size+'px';
+   img.style.left=(Math.random()*(window.innerWidth-size))+'px';
+   img.style.top=(Math.random()*(window.innerHeight-size))+'px';
+   img.style.opacity=(0.5+Math.random()*0.5).toFixed(2);
+   img.style.transform=`rotate(${Math.random()*360}deg) scale(${0.7+Math.random()*0.8})`;
+   sighContainer.appendChild(img);
+ }
 }
 function hideSighBorder(){sighContainer.innerHTML='';}
-window.addEventListener('hashchange',()=>{if(location.hash==='#imagePopup')showSighBorder();else hideSighBorder();});
+
+window.addEventListener('hashchange',()=>{
+ popupOpen = location.hash==='#imagePopup';
+ if(popupOpen){
+   showSighBorder();
+   if(!beepInterval) startBeeps();
+ }else{
+   hideSighBorder();
+   if(!hovering) stopBeeps();
+ }
+});
 
 
 // High-frequency beep generator
@@ -306,6 +320,7 @@ function stopButtonFlash() {
 }
 
 button.addEventListener('mouseenter', () => {
+  hovering=true;
   overlay.style.display = 'block';
   topBanner.style.display = 'block'; 
   
@@ -342,6 +357,7 @@ button.addEventListener('mouseenter', () => {
 
 // Structural restoration cleanup on cursor departure
 button.addEventListener('mouseleave', () => {
+  hovering=false;
   container.innerHTML = '';
   overlay.style.display = 'none';
   topBanner.style.display = 'none'; 
@@ -351,7 +367,7 @@ button.addEventListener('mouseleave', () => {
   document.body.classList.remove('storm-active');
   
   // Kill MP3 audio and visual effect engines instantly
-  stopBeeps();
+  if(!popupOpen) stopBeeps();
   stopScreenShake();
   stopButtonFlash();
 });
