@@ -17,22 +17,20 @@ body {
   min-height: 100vh;
 }
 
-/* --- Top Left Hover Popup Styling --- */
-.hover-alert {
-  display: none; /* Hidden by default */
+/* Style for the scattered popup boxes */
+.freaky-popup {
   position: fixed;
-  top: 20px;
-  left: 20px;
-  background-color: #333;
+  background-color: #ff4d4d;
   color: #fff;
-  padding: 10px 20px;
+  padding: 8px 16px;
   font-size: 14px;
   font-weight: bold;
   border-radius: 4px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   z-index: 2000;
-  /* Crucial: Allows click events to pass straight through this element */
+  /* Crucial: Allows click events to pass straight through so nothing gets blocked */
   pointer-events: none; 
+  user-select: none;
 }
 
 /* Style for the main trigger button */
@@ -50,17 +48,12 @@ body {
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
-  z-index: 10;
+  z-index: 2010; /* Placed higher than popups to ensure total top visibility */
 }
 
 .open-btn:hover {
   background-color: #e2e2e2;
   border-color: #999;
-}
-
-/* --- Show the top-left alert box when hovering over the anchor/button link --- */
-.btn-wrapper:hover ~ .hover-alert {
-  display: block;
 }
 
 /* Default layout behavior for your content elements */
@@ -78,7 +71,7 @@ p {
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
+  z-index: 3000;
   left: 0;
   top: 0;
   width: 100%;
@@ -134,13 +127,13 @@ p {
 </head>
 <body>
 
-<!-- Main Page Trigger Button (Wrapped in a class to easily track the hover state) -->
-<a href="#imagePopup" class="btn-wrapper" style="margin: 0; display: inline;">
-  <button type="button" class="open-btn">feet pics</button>
+<!-- Main Page Trigger Button (Monitored by JavaScript events) -->
+<a href="#imagePopup" style="margin: 0; display: inline;">
+  <button type="button" class="open-btn" id="triggerBtn">feet pics</button>
 </a>
 
-<!-- The Top Left Popup Box -->
-<div class="hover-alert">why are you freaky</div>
+<!-- Container where random popups will be injected -->
+<div id="popupContainer"></div>
 
 <!-- Left content block remains entirely intact -->
 <a href="https://youtube.com" target="_blank">
@@ -163,8 +156,9 @@ p {
   </div>
 </div>
 
-<!-- Keyboard Event Handler -->
+<!-- Scripts for Keyboard and Hover Manipulation -->
 <script>
+// Close modal with keys
 document.addEventListener('keydown', function(event) {
   if (window.location.hash === '#imagePopup') {
     if (event.key === 'Enter' || event.key === 'Escape') {
@@ -172,6 +166,34 @@ document.addEventListener('keydown', function(event) {
       window.location.hash = '#';
     }
   }
+});
+
+// Dynamic Pop-up Spawner Setup
+const button = document.getElementById('triggerBtn');
+const container = document.getElementById('popupContainer');
+
+button.addEventListener('mouseenter', () => {
+  // Generate 25 scattered notifications all over the screen layout
+  for (let i = 0; i < 25; i++) {
+    const popup = document.createElement('div');
+    popup.className = 'freaky-popup';
+    popup.innerText = 'why are you freaky';
+    
+    // Pick entirely random coordinates based on the user's live window screen sizes
+    // Pads values by 10% to prevent overflow edge issues
+    const randomTop = Math.floor(Math.random() * 85) + 5;
+    const randomLeft = Math.floor(Math.random() * 85) + 5;
+    
+    popup.style.top = randomTop + 'vh';
+    popup.style.left = randomLeft + 'vw';
+    
+    container.appendChild(popup);
+  }
+});
+
+// Wipe out all generated blocks when the mouse pointer steps away
+button.addEventListener('mouseleave', () => {
+  container.innerHTML = '';
 });
 </script>
 </body>
