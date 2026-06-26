@@ -11,5 +11,132 @@
     
   <img src="/tungtungtung.webp" style="display: block; max-width: 100%; height: 65vh; width: auto; object-fit: contain; margin: 0 0;">
   
-  
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Image Popup</title>
+    <style>
+        /* Base page styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        /* Style for the main trigger button */
+        .open-btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            background-color: #fff;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .open-btn:hover {
+            background-color: #e2e2e2;
+            border-color: #999;
+        }
+
+        /* The hidden popup background overlay */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0, 0, 0, 0.85); /* Smooth dark overlay */
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Displays the modal when its ID is in the URL hash */
+        .modal:target {
+            display: flex;
+        }
+
+        /* Wrapper box for the popup image content */
+        .modal-content {
+            position: relative;
+            max-width: 85%;
+            max-height: 85%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Responsive image behavior */
+        .modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            display: block;
+            border: 4px solid white;
+            border-radius: 4px;
+        }
+
+        /* Visual styling for the 'X' close button */
+        .close-btn {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: #ff4d4d;
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1;
+            padding: 6px 10px;
+            border-radius: 50%;
+            border: 2px solid white;
+            transition: background 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #cc0000;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Page Trigger Button -->
+    <a href="#imagePopup">
+        <button type="button" class="open-btn">feet pics</button>
+    </a>
+
+    <!-- Overlay Popup Component -->
+    <div id="imagePopup" class="modal">
+        <div class="modal-content">
+            <!-- Visual Close Anchor -->
+            <a href="#" class="close-btn">&times;</a>
+            <!-- Linked Source Image -->
+            <img src="feet1.png" alt="Feet Image Display">
+        </div>
+    </div>
+
+    <!-- Keyboard Event Handler -->
+    <script>
+        document.addEventListener('keydown', function(event) {
+            // Only capture keystrokes if the specific popup overlay is currently active
+            if (window.location.hash === '#imagePopup') {
+                // Check if the user pressed 'Enter' (Return) or 'Escape'
+                if (event.key === 'Enter' || event.key === 'Escape') {
+                    event.preventDefault(); // Intercept default browser actions
+                    window.location.hash = '#'; // Clear anchor string to reset state and close view
+                }
+            }
+        });
+    </script>
+
+</body>
+
+
+    
   </html>
