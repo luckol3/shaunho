@@ -11,11 +11,14 @@
 body { 
     font-family: Arial, sans-serif; 
     display: flex; 
-    flex-direction: column; /* Changed to stack elements vertically */
-    align-items: center;    /* Keeps everything horizontally centered */
-    min-height: 100vh;      /* Use min-height so content can flow */
+    flex-direction: column; /* Stacks everything vertically */
+    align-items: center;    /* Centers every item horizontally */
+    justify-content: flex-start; 
+    min-height: 100vh; 
     margin: 0; 
+    padding: 20px 0;        /* Gives a little breathing room at top and bottom */
     background-color: #f4f4f9; 
+    text-align: center;     /* Ensures all text lines center up */
 } 
 
 /* Container to force the button to the very top */
@@ -23,8 +26,14 @@ body {
     width: 100%;
     display: flex;
     justify-content: center;
-    padding-top: 15px;      /* Spacing from the very top edge */
-    box-sizing: border-box;
+    margin-bottom: 20px;    /* Adds clean separation under the button */
+}
+
+/* Forces the link images to behave like centered blocks */
+.centered-link {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 /* Style for the main trigger button */ 
@@ -52,7 +61,7 @@ body {
     top: 0; 
     width: 100%; 
     height: 100%; 
-    background-color: rgba(0, 0, 0, 0.85); /* Smooth dark overlay */ 
+    background-color: rgba(0, 0, 0, 0.85); 
     justify-content: center; 
     align-items: center; 
 } 
@@ -98,18 +107,22 @@ body {
 </head> 
 <body> 
 
-<!-- Main Page Trigger Button (Moved to top inside wrapper) --> 
+<!-- Main Page Trigger Button (Perfectly Top Centered) --> 
 <div class="button-header">
     <a href="#imagePopup"> 
         <button type="button" class="open-btn">feet pics</button> 
     </a> 
 </div>
 
-<a href="https://youtube.com" target="_blank"> 
+<!-- Center aligned link image -->
+<a href="https://youtube.com" target="_blank" class="centered-link"> 
     <img src="3tung.png" alt="dont touch me" title="dont touch me" style="cursor: pointer; width: auto; height: auto;" /> 
 </a> 
+
 <p> "if your head hurts, its just tung tung tung sahur building a house, let him" - Albert Einstein circa 1903 </p> 
-<img src="/tungtungtung.webp" style="display: block; max-width: 100%; height: 65vh; width: auto; object-fit: contain; margin: 0 0;"> 
+
+<!-- Centered main meme image -->
+<img src="/tungtungtung.webp" style="display: block; max-width: 100%; height: 65vh; width: auto; object-fit: contain; margin: 0 auto;"> 
 
 <!-- Overlay Popup Component --> 
 <div id="imagePopup" class="modal"> 
@@ -120,15 +133,14 @@ body {
         <img src="feet1.png" alt="Feet Image Display"> 
     </div> 
 </div> 
+
 <!-- Keyboard Event Handler --> 
 <script> 
 document.addEventListener('keydown', function(event) { 
-    // Only capture keystrokes if the specific popup overlay is currently active 
     if (window.location.hash === '#imagePopup') { 
-        // Check if the user pressed 'Enter' (Return) or 'Escape' 
         if (event.key === 'Enter' || event.key === 'Escape') { 
-            event.preventDefault(); // Intercept default browser actions 
-            window.location.hash = '#'; // Clear anchor string to reset state and close view 
+            event.preventDefault(); 
+            window.location.hash = '#'; 
         } 
     } 
 }); 
