@@ -130,7 +130,7 @@ div.modal {
  top: 0; 
  width: 100%; 
  height: 100%; 
- background-color: rgba(0, 0, 0, 0.85); 
+ background-color: transparent; 
  justify-content: center; 
  align-items: center; 
 } 
@@ -258,10 +258,15 @@ function hideSighBorder(){sighContainer.innerHTML='';}
 
 window.addEventListener('hashchange',()=>{
  popupOpen = location.hash==='#imagePopup';
+
  if(popupOpen){
+   topBanner.innerText='you freak:';
+   topBanner.style.display='block';
    showSighBorder();
    if(!beepInterval) startBeeps();
  }else{
+   topBanner.innerText='freaky little thing dont even try to click me';
+   if(!hovering) topBanner.style.display='none';
    hideSighBorder();
    if(!hovering) stopBeeps();
  }
@@ -322,6 +327,7 @@ function stopButtonFlash() {
 button.addEventListener('mouseenter', () => {
   hovering=true;
   overlay.style.display = 'block';
+  topBanner.innerText='freaky little thing dont even try to click me';
   topBanner.style.display = 'block'; 
   
   // Apply transition styles and start fading background color to dark storm gray
