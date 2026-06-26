@@ -1,147 +1,152 @@
-<!DOCTYPE html> 
-<html> 
-<link rel="icon" type="image/x-icon" href="/tungtungtung.webp"> 
-<title>shaun ho</title> 
-<head> 
-<meta charset="UTF-8"> 
-<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-<title>Interactive Image Popup</title> 
-<style> 
-/* Base page styling */ 
-body { 
-    font-family: Arial, sans-serif; 
-    margin: 0; 
-    padding: 20px 0;
-    background-color: #ffffff; 
-    position: relative; /* Essential to anchor the absolute button contextually */
-    min-height: 100vh;
-} 
+<!DOCTYPE html>
+<html>
+<link rel="icon" type="image/x-icon" href="/tungtungtung.webp">
+<title>shaun ho</title>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Image Popup</title>
+<style>
+/* Base page styling */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px 0;
+  background-color: #ffffff;
+  position: relative; /* Essential to anchor the absolute button contextually */
+  min-height: 100vh;
+}
 
-/* Style for the main trigger button */ 
-.open-btn { 
-    /* Position exactly into the right-hand blank zone */
-    position: absolute;
-    top: 360px;          /* Vertical alignment matching your green circle zone */
-    right: 25%;          /* Horizontally locks it deep in the right half */
-    
-    padding: 12px 24px; 
-    font-size: 16px; 
-    font-weight: bold; 
-    color: #333; 
-    background-color: #fff; 
-    border: 2px solid #ccc; 
-    border-radius: 6px; 
-    cursor: pointer; 
-    transition: all 0.2s ease; 
-    z-index: 10;
-} 
-.open-btn:hover { 
-    background-color: #e2e2e2; 
-    border-color: #999; 
-} 
+/* Style for the main trigger button */
+.open-btn {
+  /* Position exactly into the right-hand blank zone */
+  position: absolute;
+  top: 360px; /* Vertical alignment matching your green circle zone */
+  right: 25%; /* Horizontally locks it deep in the right half */
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.open-btn:hover {
+  background-color: #e2e2e2;
+  border-color: #999;
+}
 
 /* Default layout behavior for your content elements */
 a, p, img {
-    display: block;         
-    width: max-content;     
-    max-width: 100%;
-    margin: 20px 0 20px 40px; 
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  margin: 20px 0 20px 40px;
 }
-
 p {
-    text-align: left;
+  text-align: left;
 }
 
-/* The hidden popup background overlay */ 
-.modal { 
-    display: none; 
-    position: fixed; 
-    z-index: 1000; 
-    left: 0; 
-    top: 0; 
-    width: 100%; 
-    height: 100%; 
-    background-color: rgba(0, 0, 0, 0.85); 
-    justify-content: center; 
-    align-items: center; 
-} 
-/* Displays the modal when its ID is in the URL hash */ 
-.modal:target { 
-    display: flex; 
-} 
-/* Wrapper box for the popup image content */ 
-.modal-content { 
-    position: relative; 
-    max-width: 85%; 
-    max-height: 85%; 
-    box-shadow: 0 5px 15px rgba(0,0,0,0.5); 
-} 
-/* Responsive image behavior */ 
-.modal-content img { 
-    max-width: 100%; 
-    max-height: 80vh; 
-    display: block; 
-    border: 4px solid white; 
-    border-radius: 4px; 
-    margin: 0;             
-} 
-/* Visual styling for the 'X' close button */ 
-.close-btn { 
-    position: absolute; 
-    top: -15px; 
-    right: -15px; 
-    background: #ff4d4d; 
-    color: white; 
-    text-decoration: none; 
-    font-size: 20px; 
-    font-weight: bold; 
-    line-height: 1; 
-    padding: 6px 10px; 
-    border-radius: 50%; 
-    border: 2px solid white; 
-    transition: background 0.2s; 
-} 
-.close-btn:hover { 
-    background: #cc0000; 
-} 
-</style> 
-</head> 
-<body> 
+/* The hidden popup background overlay */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  justify-content: center;
+  align-items: center;
+}
 
-<!-- Main Page Trigger Button (Positioned via CSS coordinates into the circle) --> 
-<a href="#imagePopup" style="margin: 0; display: inline;"> 
-    <button type="button" class="open-btn">feet pics</button> 
-</a> 
+/* Displays the modal when its ID is in the URL hash */
+.modal:target {
+  display: flex;
+}
+
+/* Wrapper box for the popup image content */
+.modal-content {
+  position: relative;
+  max-width: 85%;
+  max-height: 85%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+/* Responsive image behavior */
+.modal-content img {
+  max-width: 100%;
+  max-height: 80vh;
+  display: block;
+  border: 4px solid white;
+  border-radius: 4px;
+  margin: 0;
+}
+
+/* Visual styling for the 'X' close button */
+.close-btn {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background: #ff4d4d;
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1;
+  padding: 6px 10px;
+  border-radius: 50%;
+  border: 2px solid white;
+  transition: background 0.2s;
+}
+.close-btn:hover {
+  background: #cc0000;
+}
+</style>
+</head>
+<body>
+
+<!-- Main Page Trigger Button (Equipped with title tag to act like an image alt text tooltip) -->
+<a href="#imagePopup" style="margin: 0; display: inline;">
+  <button type="button" class="open-btn" title="why are you freaky">feet pics</button>
+</a>
 
 <!-- Left content block remains entirely intact -->
-<a href="https://youtube.com" target="_blank"> 
-    <img src="3tung.png" alt="dont touch me" title="dont touch me" style="cursor: pointer; width: auto; height: auto; margin: 0;" /> 
-</a> 
+<a href="https://youtube.com" target="_blank">
+  <img src="3tung.png" alt="dont touch me" title="dont touch me" style="cursor: pointer; width: auto; height: auto; margin: 0;" />
+</a>
 
-<p> "if your head hurts, its just tung tung tung sahur building a house, let him" - Albert Einstein circa 1903 </p> 
+<p>
+  "if your head hurts, its just tung tung tung sahur building a house, let him" - Albert Einstein circa 1903
+</p>
 
-<img src="/tungtungtung.webp" style="height: 65vh; width: auto; object-fit: contain;"> 
+<img src="/tungtungtung.webp" style="height: 65vh; width: auto; object-fit: contain;">
 
-<!-- Overlay Popup Component --> 
-<div id="imagePopup" class="modal"> 
-    <div class="modal-content"> 
-        <!-- Visual Close Anchor --> 
-        <a href="#" class="close-btn">&times;</a> 
-        <!-- Linked Source Image --> 
-        <img src="feet1.png" alt="Feet Image Display"> 
-    </div> 
-</div> 
+<!-- Overlay Popup Component -->
+<div id="imagePopup" class="modal">
+  <div class="modal-content">
+    <!-- Visual Close Anchor -->
+    <a href="#" class="close-btn">&times;</a>
+    <!-- Linked Source Image -->
+    <img src="feet1.png" alt="Feet Image Display">
+  </div>
+</div>
 
-<!-- Keyboard Event Handler --> 
-<script> 
-document.addEventListener('keydown', function(event) { 
-    if (window.location.hash === '#imagePopup') { 
-        if (event.key === 'Enter' || event.key === 'Escape') { 
-            event.preventDefault(); 
-            window.location.hash = '#'; 
-        } 
-    } 
-}); 
-</script> 
-</body> 
+<!-- Keyboard Event Handler -->
+<script>
+document.addEventListener('keydown', function(event) {
+  if (window.location.hash === '#imagePopup') {
+    if (event.key === 'Enter' || event.key === 'Escape') {
+      event.preventDefault();
+      window.location.hash = '#';
+    }
+  }
+});
+</script>
+</body>
 </html>
