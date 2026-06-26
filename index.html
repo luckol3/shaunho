@@ -15,9 +15,10 @@ body {
  background-color: #ffffff; 
  position: relative; /* Essential to anchor the absolute button contextually */ 
  min-height: 100vh; 
+ transition: transform 0.05s ease; /* Enables snappy fullscreen screen shake */
 } 
 
-/* --- Toned Down Soft Vibration Keyframes --- */
+/* --- Toned Down Soft Vibration Keyframes for Popups --- */
 @keyframes subtleVibration {
   0% { transform: translate(0.5px, 0.5px) rotate(0deg); }
   20% { transform: translate(-0.5px, -0.5px) rotate(0.5deg); }
@@ -33,15 +34,12 @@ body {
   background-color: #ff4d4d;
   color: #fff;
   padding: 8px 16px;
-  font-size: 14px;
   font-weight: bold;
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   z-index: 2000;
-  /* Crucial: Allows click events to pass straight through so nothing gets blocked */
   pointer-events: none; 
   user-select: none;
-  /* Attach the toned-down vibration animation loop */
   animation: subtleVibration 0.15s infinite linear;
 }
 
@@ -53,17 +51,16 @@ body {
   width: 100%;
   height: 100%;
   background-color: rgba(255, 0, 0, 0.15); /* Light red danger filter tint */
-  z-index: 1500; /* Sits cleanly behind popups and button, but over baseline content */
-  pointer-events: none; /* Ghost overlay allows clicks straight through */
-  display: none; /* Hidden until button hover active */
+  z-index: 1500; 
+  pointer-events: none; 
+  display: none; 
 }
 
 /* Style for the main trigger button */ 
 .open-btn { 
- /* Position exactly into the right-hand blank zone */ 
  position: absolute; 
- top: 360px; /* Vertical alignment matching your green circle zone */ 
- right: 25%; /* Horizontally locks it deep in the right half */ 
+ top: 360px; 
+ right: 25%; 
  padding: 12px 24px; 
  font-size: 16px; 
  font-weight: bold; 
@@ -73,7 +70,7 @@ body {
  border-radius: 6px; 
  cursor: pointer; 
  transition: color 0.1s ease, background-color 0.1s ease, border-color 0.1s ease; 
- z-index: 2010; /* Placed higher than popups and overlay to ensure top visibility and clickability */
+ z-index: 2010; 
 } 
 .open-btn:hover { 
  background-color: #e2e2e2; 
@@ -101,7 +98,7 @@ p {
 div.modal { 
  display: none; 
  position: fixed; 
- z-index: 3000; /* Pushed high above everything else */
+ z-index: 3000; 
  left: 0; 
  top: 0; 
  width: 100%; 
@@ -192,53 +189,52 @@ document.addEventListener('keydown', function(event) {
 const button = document.getElementById('triggerBtn');
 const container = document.getElementById('popupContainer');
 const overlay = document.getElementById('dangerOverlay');
-let dingInterval = null;
-let audioCtx = null;
 
-// Function to synthesize a high-pitched metallic bell / chime noise and execute synchronized visual flash
-function playBellSound() {
-  try {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    
-    const osc = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-    
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, audioCtx.currentTime); // High pitch bell chime frequency (A5 node)
-    
-    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
-    
-    osc.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-    
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.25);
+let globalShakeInterval = null;
+let buttonFlashInterval = null;
 
-    // Trigger visual button flashing sequence exactly synced with the chime wave envelope
-    button.classList.add('flash-active');
-    setTimeout(() => {
-      button.classList.remove('flash-active');
-    }, 120);
+// --- Load Your Local MP3 Track ---
+const tornadoAudio = new Audio('tornado.mp3');
+tornadoAudio.loop = true; // Loops the siren seamlessly if the user keeps hovering
 
-  } catch (e) {
-    // Fallback block
-  }
+// Fullscreen Screen Shake Module
+function startScreenShake() {
+  globalShakeInterval = setInterval(() => {
+    const moveX = (Math.random() * 4 - 2).toFixed(1);
+    const moveY = (Math.random() * 4 - 2).toFixed(1);
+    document.body.style.transform = `translate(${moveX}px, ${moveY}px)`;
+  }, 30);
+}
+
+function stopScreenShake() {
+  if (globalShakeInterval) clearInterval(globalShakeInterval);
+  document.body.style.transform = 'none';
+}
+
+// Visual Button Flash Loop
+function startButtonFlash() {
+  buttonFlashInterval = setInterval(() => {
+    button.classList.toggle('flash-active');
+  }, 200); // Toggles color every 200ms for an emergency light effect
+}
+
+function stopButtonFlash() {
+  if (buttonFlashInterval) clearInterval(buttonFlashInterval);
+  button.classList.remove('flash-active');
 }
 
 button.addEventListener('mouseenter', () => {
-  // Fire the initial bell chime right away and toggle overlay visibility
   overlay.style.display = 'block';
-  playBellSound();
+  
+  // Reset track to beginning and play the MP3 audio
+  tornadoAudio.currentTime = 0;
+  tornadoAudio.play().catch(() => { /* Stops browser autoplay blocks */ });
+  
+  // Ignite visual emergency effect loops
+  startScreenShake();
+  startButtonFlash();
 
-  // Trigger subsequent bell chimes precisely every 250 milliseconds
-  dingInterval = setInterval(() => {
-    playBellSound();
-  }, 250);
-
-  // Spawn 25 subtly shaking elements across the viewport bounds
+  // Spawn 25 unevenly scaled/opaque warning elements across the bounds
   for (let i = 0; i < 25; i++) {
     const popup = document.createElement('div');
     popup.className = 'freaky-popup';
@@ -246,23 +242,28 @@ button.addEventListener('mouseenter', () => {
     
     const randomTop = Math.floor(Math.random() * 85) + 5;
     const randomLeft = Math.floor(Math.random() * 85) + 5;
-    
     popup.style.top = randomTop + 'vh';
     popup.style.left = randomLeft + 'vw';
+    
+    const randomScale = (Math.random() * 0.7 + 0.6).toFixed(2); // Scale between 0.6x and 1.3x
+    const randomOpacity = (Math.random() * 0.4 + 0.6).toFixed(2); // Opacity between 0.6 and 1.0
+    
+    popup.style.transform = `scale(${randomScale})`;
+    popup.style.opacity = randomOpacity;
     
     container.appendChild(popup);
   }
 });
 
-// Clear popups, hide overlay filter, and dismantle interval once mouse exits button frame bounds
+// Structural restoration cleanup on cursor departure
 button.addEventListener('mouseleave', () => {
   container.innerHTML = '';
   overlay.style.display = 'none';
-  button.classList.remove('flash-active');
-  if (dingInterval) {
-    clearInterval(dingInterval);
-    dingInterval = null;
-  }
+  
+  // Kill MP3 audio and visual effect engines instantly
+  tornadoAudio.pause();
+  stopScreenShake();
+  stopButtonFlash();
 });
 </script> 
 </body> 
