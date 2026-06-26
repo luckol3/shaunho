@@ -17,19 +17,14 @@ body {
  min-height: 100vh; 
 } 
 
-/* --- High-Intensity Violent Vibration Keyframes --- */
-@keyframes violentShake {
-  0% { transform: translate(3px, 2px) rotate(0deg); }
-  10% { transform: translate(-2px, -3px) rotate(-2deg); }
-  20% { transform: translate(-4px, 0px) rotate(3deg); }
-  30% { transform: translate(0px, 3px) rotate(0deg); }
-  40% { transform: translate(2px, -2px) rotate(2deg); }
-  50% { transform: translate(-2px, 3px) rotate(-3deg); }
-  60% { transform: translate(-4px, 2px) rotate(0deg); }
-  70% { transform: translate(3px, 2px) rotate(3deg); }
-  80% { transform: translate(-2px, -2px) rotate(-2deg); }
-  90% { transform: translate(3px, -3px) rotate(1deg); }
-  100% { transform: translate(2px, 2px) rotate(0deg); }
+/* --- Toned Down Soft Vibration Keyframes --- */
+@keyframes subtleVibration {
+  0% { transform: translate(0.5px, 0.5px) rotate(0deg); }
+  20% { transform: translate(-0.5px, -0.5px) rotate(0.5deg); }
+  40% { transform: translate(-1px, 0px) rotate(-0.5deg); }
+  60% { transform: translate(0px, 1px) rotate(0deg); }
+  80% { transform: translate(0.5px, -0.5px) rotate(0.5deg); }
+  100% { transform: translate(0px, 0px) rotate(0deg); }
 }
 
 /* Style for the scattered popup boxes */ 
@@ -46,8 +41,8 @@ body {
   /* Crucial: Allows click events to pass straight through so nothing gets blocked */
   pointer-events: none; 
   user-select: none;
-  /* Attach the violent vibration animation loop */
-  animation: violentShake 0.1s infinite linear;
+  /* Attach the toned-down vibration animation loop */
+  animation: subtleVibration 0.15s infinite linear;
 }
 
 /* Style for the main trigger button */ 
@@ -172,25 +167,28 @@ document.addEventListener('keydown', function(event) {
 
 const button = document.getElementById('triggerBtn');
 const container = document.getElementById('popupContainer');
+let dingInterval = null;
 
-// Inline Retro Synth Laser/Alert Sound Effect Box (Base64 WAV Format)
-const alertAudio = new Audio('data:audio/wav;base64,UklGRmQAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YVAAAACAAICAgICAgICAgICSkoqSioKCfHpycnJyenp8fHx8fn56enp6enp6fHx8e3t7e3t6enl5eHh4eHh4fX19fX19e3t7e3p6eXl4eHh4eHh5eXl5eXl4eA==');
-
-// Loop audio file seamlessly when hovered
-alertAudio.loop = true;
+// High-frequency synthetic metallic 'ding' bell sound (Base64 WAV format)
+const dingAudioURI = "data:audio/wav;base64,UklGRmYAAABXQVZFZm10IBAAAAABAAEAESsAABErAAABAAgAZGF0YVIAAACAgICAgoKCgoKCfn5+fHp6enp5eXl4d3d3d3Z2dnZ1dXV0dHRycXFxcG9vb29ubm5tbW1samppaGhoaGdmZmZlZWVrAAAAAA==";
 
 button.addEventListener('mouseenter', () => {
-  // Rewind and fire the warning audio clip safely
-  alertAudio.currentTime = 0;
-  alertAudio.play().catch(() => { /* Handles browser security autoplay limits */ });
+  // Fire an immediate initial ding sound
+  const initialDing = new Audio(dingAudioURI);
+  initialDing.play().catch(() => {});
 
-  // Generate 25 violently vibrating notifications scattered across the layout view
+  // Set up a loop interval to constantly hit "ding... ding... ding..." every 250 milliseconds
+  dingInterval = setInterval(() => {
+    const freshDing = new Audio(dingAudioURI);
+    freshDing.play().catch(() => {});
+  }, 250);
+
+  // Spawn 25 subtly shaking elements across the viewport bounds
   for (let i = 0; i < 25; i++) {
     const popup = document.createElement('div');
     popup.className = 'freaky-popup';
     popup.innerText = 'why are you freaky';
     
-    // Pick entirely random coordinates bounded nicely inside viewport width/height
     const randomTop = Math.floor(Math.random() * 85) + 5;
     const randomLeft = Math.floor(Math.random() * 85) + 5;
     
@@ -201,10 +199,13 @@ button.addEventListener('mouseenter', () => {
   }
 });
 
-// Immediately wipe out everything and pause the audio once mouse exits button frame
+// Clear popups and dismantle the audio interval when cursor exits the button frame
 button.addEventListener('mouseleave', () => {
   container.innerHTML = '';
-  alertAudio.pause();
+  if (dingInterval) {
+    clearInterval(dingInterval);
+    dingInterval = null;
+  }
 });
 </script> 
 </body> 
