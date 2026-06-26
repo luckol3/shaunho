@@ -10,30 +10,17 @@
 /* Base page styling */ 
 body { 
     font-family: Arial, sans-serif; 
-    display: flex; 
-    flex-direction: column; /* Stacks everything vertically */
-    align-items: center;    /* Centers every item horizontally */
-    justify-content: flex-start; 
-    min-height: 100vh; 
     margin: 0; 
-    padding: 20px 0;        /* Gives a little breathing room at top and bottom */
+    padding: 20px 0;
     background-color: #f4f4f9; 
-    text-align: center;     /* Ensures all text lines center up */
 } 
 
-/* Container to force the button to the very top */
+/* Header container specifically for the top button */
 .button-header {
-    width: 100%;
     display: flex;
-    justify-content: center;
-    margin-bottom: 20px;    /* Adds clean separation under the button */
-}
-
-/* Forces the link images to behave like centered blocks */
-.centered-link {
-    display: flex;
-    justify-content: center;
+    justify-content: center; /* Centers the button horizontally */
     width: 100%;
+    margin-bottom: 20px;
 }
 
 /* Style for the main trigger button */ 
@@ -52,6 +39,20 @@ body {
     background-color: #e2e2e2; 
     border-color: #999; 
 } 
+
+/* Default behavior for your normal images and paragraph links */
+a, p, img {
+    display: block;         /* Stack normally below each other */
+    width: max-content;     /* Keeps width confined to the content size */
+    max-width: 100%;
+    margin: 20px 0 20px 40px; /* Aligns them toward the left side with a 40px margin offset */
+}
+
+/* Paragraph specific text alignment override */
+p {
+    text-align: left;
+}
+
 /* The hidden popup background overlay */ 
 .modal { 
     display: none; 
@@ -83,6 +84,7 @@ body {
     display: block; 
     border: 4px solid white; 
     border-radius: 4px; 
+    margin: 0;             /* Prevents modal images from getting the body image margins */
 } 
 /* Visual styling for the 'X' close button */ 
 .close-btn { 
@@ -107,22 +109,21 @@ body {
 </head> 
 <body> 
 
-<!-- Main Page Trigger Button (Perfectly Top Centered) --> 
+<!-- Main Page Trigger Button (Stays perfectly top-centered) --> 
 <div class="button-header">
-    <a href="#imagePopup"> 
+    <a href="#imagePopup" style="margin: 0; display: inline;"> 
         <button type="button" class="open-btn">feet pics</button> 
     </a> 
 </div>
 
-<!-- Center aligned link image -->
-<a href="https://youtube.com" target="_blank" class="centered-link"> 
-    <img src="3tung.png" alt="dont touch me" title="dont touch me" style="cursor: pointer; width: auto; height: auto;" /> 
+<!-- All remaining elements now cascade naturally along the left side -->
+<a href="https://youtube.com" target="_blank"> 
+    <img src="3tung.png" alt="dont touch me" title="dont touch me" style="cursor: pointer; width: auto; height: auto; margin: 0;" /> 
 </a> 
 
 <p> "if your head hurts, its just tung tung tung sahur building a house, let him" - Albert Einstein circa 1903 </p> 
 
-<!-- Centered main meme image -->
-<img src="/tungtungtung.webp" style="display: block; max-width: 100%; height: 65vh; width: auto; object-fit: contain; margin: 0 auto;"> 
+<img src="/tungtungtung.webp" style="height: 65vh; width: auto; object-fit: contain;"> 
 
 <!-- Overlay Popup Component --> 
 <div id="imagePopup" class="modal"> 
